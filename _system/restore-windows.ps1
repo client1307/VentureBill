@@ -1,4 +1,4 @@
-# Free GST Billing - Windows restore-from-backup.
+# VentureBill - Windows restore-from-backup.
 #
 # Prompts for a backup ZIP via a file-picker dialog. Snapshots
 # CURRENT data/ first as safety net, then extracts the backup ZIP

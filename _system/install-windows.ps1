@@ -34,7 +34,7 @@ function Find-OtherInstall {
       $lnk = Join-Path $dir 'VentureBill.lnk'
       if (-not (Test-Path -LiteralPath $lnk)) { continue }
       # v1.10.83 - the one-line install's shortcut runs "...\_system\start-windows.ps1"
-      # -AppWindow; the launcher's runs "...\Free GST Billing - WINDOWS.hta". The
+      # -AppWindow; the launcher's runs "...\VentureBill - WINDOWS.hta". The
       # first quoted path is the script either way.
       $a = [string](New-Object -ComObject WScript.Shell).CreateShortcut($lnk).Arguments
       $p = if ($a -match '"([^"]+)"') { $Matches[1] } else { $a.Trim() }
@@ -130,7 +130,7 @@ Write-Host ''
 Write-Host '  Creating the Desktop and Start Menu icons...'
 foreach ($dir in @([Environment]::GetFolderPath('Desktop'), [Environment]::GetFolderPath('Programs'))) {
   try {
-    New-AppShortcut (Join-Path $dir 'Free GST Billing.lnk') $SystemDir
+    New-AppShortcut (Join-Path $dir 'VentureBill.lnk') $SystemDir
     Write-Host "  Icon created in $dir"
   } catch {
     Write-Host "  WARNING: could not create the icon in $dir ($($_.Exception.Message)). You can still open the app from the launcher in the app folder."

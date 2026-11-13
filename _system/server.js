@@ -1548,7 +1548,7 @@ function runControlScript(scriptPath) {
     // /run/current-system/sw/bin/bash on NixOS.
     const unixShell = path.basename(scriptPath) === 'update-unix.sh' ? 'sh' : 'bash';
     const [cmd, args] = isWindows
-      ? ['powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', scriptPath]]
+      ? ['powershell.exe', ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', scriptPath, '-NonInteractive']]
       : [unixShell, [scriptPath]];
     let out = '', err = '';
     try {
@@ -1631,7 +1631,7 @@ app.post('/api/control-panel/open-data-folder', (req, res) => {
 });
 
 app.post('/api/control-panel/open-backups-folder', (req, res) => {
-  const backupsHome = path.join(process.env.USERPROFILE || process.env.HOME || '', 'Documents', 'FreeGSTBill Backups');
+  const backupsHome = path.join(process.env.USERPROFILE || process.env.HOME || '', 'Documents', 'VentureBill Backups');
   try {
     if (!fs.existsSync(backupsHome)) makeDir(backupsHome);
     if (isWindows) spawn('explorer.exe', [backupsHome], { detached: true }).unref();
@@ -1656,7 +1656,7 @@ async function fetchFromGitHub(url, timeoutMs) {
   const signal = AbortSignal.timeout(timeoutMs);
   for (let hop = 0; hop < 6; hop += 1) {
     if (!allowedDownloadUrl(url)) throw new Error('The download was sent to a site that is not GitHub. Nothing was run.');
-    const res = await fetch(url, { redirect: 'manual', signal, headers: { 'User-Agent': 'FreeGSTBill-updater' } });
+    const res = await fetch(url, { redirect: 'manual', signal, headers: { 'User-Agent': 'VentureBill-updater' } });
     if (res.status < 300 || res.status >= 400) return res;
     url = new URL(res.headers.get('location') || '', url).href;
   }
@@ -1843,10 +1843,10 @@ function todayLocalIso() {
 // v1.10.80 (#99) - a second copy of every daily backup in a folder the user
 // picks (another drive, a USB disk, a synced folder), so a failed C: drive does
 // not take the backups with it. Stored in meta.json as `backupFolder`; the
-// copies go in "<folder>/FreeGSTBill Backups/<date>", 30 days kept, and are
+// copies go in "<folder>/VentureBill Backups/<date>", 30 days kept, and are
 // listed and restorable like the ones in data/backups.
 const BACKUP_FOLDER_KEY = 'backupFolder';
-const EXTRA_BACKUP_SUBDIR = 'FreeGSTBill Backups';
+const EXTRA_BACKUP_SUBDIR = 'VentureBill Backups';
 const DATE_DIR = /^\d{4}-\d{2}-\d{2}$/;
 const extraBackupsDir = () => {
   const folder = readJSON(META_PATH, {})[BACKUP_FOLDER_KEY];

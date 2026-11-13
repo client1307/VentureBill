@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Free GST Billing — Unix backup.
+# VentureBill — Unix backup.
 set -e
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DATA_DIR="${FGSB_HOME:-$SCRIPT_DIR}/data"   # FGSB_HOME: the .deb / AppImage keep data outside the app
-BACKUPS_HOME="$HOME/Documents/FreeGSTBill Backups"
+BACKUPS_HOME="$HOME/Documents/VentureBill Backups"
 
 if [ ! -d "$DATA_DIR" ]; then
   echo "  No data folder found — nothing to back up."

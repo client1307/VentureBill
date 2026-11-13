@@ -1,4 +1,4 @@
-# Free GST Billing - Windows start-server + open-browser.
+# VentureBill - Windows start-server + open-browser.
 #
 # Invoked by the HTA launcher's "Open App" button and by the
 # Desktop shortcut. Idempotent - safe to click multiple times.
@@ -16,7 +16,7 @@
 # reloads by itself).
 # v1.10.84 - -PrintUrl starts (or finds) the server like the icon does, opens
 # nothing and prints "URL=http://localhost:<port>/"; a problem is printed and
-# the exit code is 1. The Setup's own window (Free GST Billing.exe) uses it.
+# the exit code is 1. The Setup's own window (VentureBill.exe) uses it.
 
 param([switch]$AppWindow, [switch]$Hidden, [switch]$NoWindow, [switch]$PrintUrl)
 if ($PrintUrl) { try { [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false) } catch { } }
@@ -46,8 +46,8 @@ function Get-NormPath([string]$p) {
 # A Setup copy never keeps books in its program folder (src/utils/appHome.js).
 $HomeMissing = $Installed -and (-not $env:FGSB_HOME) -and ((Get-NormPath $HomeDir) -eq (Get-NormPath $SystemDir))
 
-# v1.10.69 - the Windows launcher was renamed from "Free GST Billing.hta" to
-# "Free GST Billing - WINDOWS.hta". An update to this version is carried out
+# v1.10.69 - the Windows launcher was renamed from "VentureBill.hta" to
+# "VentureBill - WINDOWS.hta". An update to this version is carried out
 # by the PREVIOUS version's updater, which copies the new launcher in but
 # knows nothing of the rename: it leaves the old file beside the new one, and
 # the Desktop and Start-Menu shortcuts still pointing at the old one. That
@@ -62,8 +62,8 @@ $HomeMissing = $Installed -and (-not $env:FGSB_HOME) -and ((Get-NormPath $HomeDi
 # broken shortcut.
 function Move-ToRenamedLauncher {
   $RootDir = Split-Path -Parent $SystemDir
-  $oldHta = Join-Path $RootDir 'Free GST Billing.hta'
-  $newHta = Join-Path $RootDir 'Free GST Billing - WINDOWS.hta'
+  $oldHta = Join-Path $RootDir 'VentureBill.hta'
+  $newHta = Join-Path $RootDir 'VentureBill - WINDOWS.hta'
   if (-not ((Test-Path -LiteralPath $oldHta) -and (Test-Path -LiteralPath $newHta))) { return }
   try {
     $wsh = New-Object -ComObject WScript.Shell
@@ -98,7 +98,7 @@ if (-not $Installed) { Move-ToRenamedLauncher }
 # app icons. Others (another copy, anything the user made) are left alone.
 function Move-IconsToApp {
   if ((Split-Path -Leaf $SystemDir) -ne '_system') { return }
-  $hta = Join-Path (Split-Path -Parent $SystemDir) 'Free GST Billing - WINDOWS.hta'
+  $hta = Join-Path (Split-Path -Parent $SystemDir) 'VentureBill - WINDOWS.hta'
   try {
     . (Join-Path $SystemDir 'app-shortcut.ps1')
     $wsh = New-Object -ComObject WScript.Shell
@@ -126,7 +126,7 @@ function Remove-ObsoleteFiles {
   # own folder.
   if ((Split-Path -Leaf $SystemDir) -ne '_system') { return }
   $RootDir = Split-Path -Parent $SystemDir
-  $hta = Join-Path $RootDir 'Free GST Billing - WINDOWS.hta'
+  $hta = Join-Path $RootDir 'VentureBill - WINDOWS.hta'
   if (-not (Test-Path -LiteralPath $hta)) { return }   # not the current layout: leave everything
   # Anything a shortcut still points at stays (an old Start-Menu or Startup
   # shortcut would otherwise be left pointing at nothing).
@@ -142,15 +142,15 @@ function Remove-ObsoleteFiles {
   } catch { return }   # cannot tell what is still in use: leave everything
   $obsolete = @(
     # renamed launchers (v1.10.69); the old .hta is handled above, once no shortcut uses it
-    @{ old = 'Free GST Billing.command'; now = 'Free GST Billing - MAC.command' },
-    @{ old = 'Free GST Billing.sh';      now = 'Free GST Billing - LINUX.sh' },
+    @{ old = 'VentureBill.command'; now = 'VentureBill - MAC.command' },
+    @{ old = 'VentureBill.sh';      now = 'VentureBill - LINUX.sh' },
     # batch launchers from before the one-file launcher (v1.10.44)
-    @{ old = 'Install FreeGSTBill.bat';  now = 'Free GST Billing - WINDOWS.hta' },
-    @{ old = 'Start FreeGSTBill.bat';    now = 'Free GST Billing - WINDOWS.hta' },
-    @{ old = 'Stop FreeGSTBill.bat';     now = 'Free GST Billing - WINDOWS.hta' },
-    @{ old = 'Update FreeGSTBill.bat';   now = 'Free GST Billing - WINDOWS.hta' },
-    @{ old = 'start-freegstbill.bat';    now = 'Free GST Billing - WINDOWS.hta' },
-    @{ old = 'start-server-silent.bat';  now = 'Free GST Billing - WINDOWS.hta' }
+    @{ old = 'Install VentureBill.bat';  now = 'VentureBill - WINDOWS.hta' },
+    @{ old = 'Start VentureBill.bat';    now = 'VentureBill - WINDOWS.hta' },
+    @{ old = 'Stop VentureBill.bat';     now = 'VentureBill - WINDOWS.hta' },
+    @{ old = 'Update VentureBill.bat';   now = 'VentureBill - WINDOWS.hta' },
+    @{ old = 'start-freegstbill.bat';    now = 'VentureBill - WINDOWS.hta' },
+    @{ old = 'start-server-silent.bat';  now = 'VentureBill - WINDOWS.hta' }
   )
   foreach ($f in $obsolete) {
     $oldPath = Join-Path $RootDir $f.old
@@ -300,7 +300,7 @@ if (-not $Installed -and -not (Test-PackagesReady)) {
 # folder's lock (held until this script ends) may start one.
 $serverJs = (Join-Path $SystemDir 'server.js').ToLower()
 $hash = [Security.Cryptography.SHA1]::Create().ComputeHash([Text.Encoding]::UTF8.GetBytes($serverJs))
-$folderId = 'FreeGSTBilling-' + (($hash[0..7] | ForEach-Object { $_.ToString('x2') }) -join '')
+$folderId = 'VentureBilling-' + (($hash[0..7] | ForEach-Object { $_.ToString('x2') }) -join '')
 $startLock = New-Object System.Threading.Mutex($false, "Local\$folderId")
 $haveLock = $false
 try { $haveLock = $startLock.WaitOne(0) } catch [System.Threading.AbandonedMutexException] { $haveLock = $true }

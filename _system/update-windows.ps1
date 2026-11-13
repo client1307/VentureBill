@@ -1,4 +1,4 @@
-# Free GST Billing - Windows updater.
+# VentureBill - Windows updater.
 #
 # Pulls the latest release ZIP from GitHub, extracts _system/ over
 # the existing one, re-runs npm install. Data folder is preserved.
@@ -16,10 +16,16 @@
 #     copy's own updater. The launcher uses it when it finds the app already
 #     installed elsewhere, instead of installing a second copy.
 
-param([string]$InstallTo = '')
+param([string]$InstallTo = '', [switch]$NonInteractive)
+
+function Prompt-Close {
+  if (-not $NonInteractive -and [Environment]::UserInteractive) {
+    try { Read-Host '  Press Enter to close' } catch {}
+  }
+}
 
 $ErrorActionPreference = 'Stop'
-$Host.UI.RawUI.WindowTitle = 'Free GST Billing - Update'
+$Host.UI.RawUI.WindowTitle = 'VentureBill - Update'
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $SystemDir = $ScriptDir
@@ -31,21 +37,21 @@ if ($InstallTo) {
   $SystemDir = Join-Path $RootDir '_system'
   if (($RootDir -eq $FromFolder.TrimEnd('\')) -or -not (Test-Path -LiteralPath (Join-Path $SystemDir 'server.js'))) {
     Write-Host "  ERROR: no installed copy of the app in $RootDir." -ForegroundColor Red
-    Read-Host '  Press Enter to close'
+    Prompt-Close
     exit 1
   }
 }
 
 Write-Host ''
 Write-Host '  ============================================================'
-Write-Host '   Free GST Billing Software - Update'
+Write-Host '   VentureBill Software - Update'
 Write-Host '  ============================================================'
 Write-Host ''
 
 # --- Step 1: Belt-and-braces backup of data folder BEFORE anything ---
 $dataDir = Join-Path $SystemDir 'data'
 if (Test-Path $dataDir) {
-  $backupsHome = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'FreeGSTBill Backups'
+  $backupsHome = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'VentureBill Backups'
   if (-not (Test-Path $backupsHome)) { New-Item -ItemType Directory -Path $backupsHome | Out-Null }
   $stamp = Get-Date -Format 'yyyy-MM-dd_HH-mm-ss'
   $preUpdateBackup = Join-Path $backupsHome "pre-update-$stamp.zip"
@@ -75,7 +81,7 @@ try {
   Write-Host "  Latest: $tag"
 } catch {
   Write-Host "  ERROR: could not reach GitHub. Are you online?" -ForegroundColor Red
-  Read-Host '  Press Enter to close'
+  Prompt-Close
   exit 1
 }
 
@@ -93,7 +99,7 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 [IO.Compression.ZipFile]::ExtractToDirectory($zipPath, $tmp)
 
 # The extract may contain either the pretty release structure
-# (root has Free GST Billing - WINDOWS.hta + _system/) or the source zipball
+# (root has VentureBill - WINDOWS.hta + _system/) or the source zipball
 # (root has IamRamgarhia-Free-GST-Billing-Software-HASH/).
 $extracted = Get-ChildItem -Path $tmp -Directory | Select-Object -First 1
 $candidateSystem = Join-Path $extracted.FullName '_system'
@@ -123,7 +129,7 @@ Get-ChildItem -Path $newSystem -Force | Where-Object { $keep -notcontains $_.Nam
   Copy-Item -Path $_.FullName -Destination $dest -Recurse -Force
 }
 # If the new release ships new launcher/HTA files at root, refresh those too
-Get-ChildItem -Path $sourceRoot -File | Where-Object { $_.Extension -match '\.(hta|command|sh)$' -or $_.Name -match '^Free GST Billing' } | ForEach-Object {
+Get-ChildItem -Path $sourceRoot -File | Where-Object { $_.Extension -match '\.(hta|command|sh)$' -or $_.Name -match '^VentureBill' } | ForEach-Object {
   Copy-Item -Path $_.FullName -Destination (Join-Path $RootDir $_.Name) -Force
 }
 # v1.10.83 - a clean update: files an older version had and this one does not
@@ -137,7 +143,7 @@ if ($shipped) {
   } | ForEach-Object { Remove-Item -LiteralPath $_.FullName -Recurse -Force -ErrorAction SilentlyContinue }
   $rootNames = @(Get-ChildItem -Path $sourceRoot -File | ForEach-Object { $_.Name })
   Get-ChildItem -Path $RootDir -File | Where-Object {
-    ($_.Name -like 'Free GST Billing - *' -or $_.Name -eq 'READ ME FIRST.txt') -and $rootNames -notcontains $_.Name
+    ($_.Name -like 'VentureBill - *' -or $_.Name -eq 'READ ME FIRST.txt') -and $rootNames -notcontains $_.Name
   } | ForEach-Object { Remove-Item -LiteralPath $_.FullName -Force -ErrorAction SilentlyContinue }
 }
 
@@ -165,7 +171,7 @@ if (-not $npmOk) {
   Write-Host '  The new version is in place, but it is not ready to run yet (see above).' -ForegroundColor Red
   Write-Host '  Your data is safe (a backup was made above). Fix the problem shown,'
   Write-Host '  then open the app from its icon: it finishes the install by itself.'
-  Read-Host '  Press Enter to close'
+  Prompt-Close
   exit 1
 }
 
@@ -176,4 +182,4 @@ Write-Host ''
 Write-Host '  [OK] Update complete!' -ForegroundColor Green
 Write-Host '  Restart the app (Stop Server -> Open App) to run the new version.'
 Write-Host ''
-Read-Host '  Press Enter to close'
+Prompt-Close
