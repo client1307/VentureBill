@@ -12,8 +12,8 @@
 // release ZIP ships it (build-release-zip.mjs).
 import crypto from 'crypto';
 
-export const SETUP_NAME = 'Free-GST-Billing-Windows-Setup.exe';
-const REPO_DOWNLOADS = 'https://github.com/IamRamgarhia/Free-GST-Billing-Software/releases/download/';
+export const SETUP_NAME = 'VentureBill-Windows-Setup.exe';
+const REPO_DOWNLOADS = 'https://github.com/client1307/VentureBill/releases/download/';
 export const DOWNLOAD_HOSTS = ['github.com', 'objects.githubusercontent.com', 'release-assets.githubusercontent.com'];
 
 export function allowedDownloadUrl(url) {

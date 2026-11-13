@@ -4,7 +4,7 @@
 # Safe if nothing is running (no error, quick exit).
 
 $ErrorActionPreference = 'SilentlyContinue'
-$Host.UI.RawUI.WindowTitle = 'Free GST Billing - Stop Server'
+$Host.UI.RawUI.WindowTitle = 'VentureBill - Stop Server'
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 # v1.10.84 - the books folder: FGSB_HOME, else home.txt, else this folder (as server.js).

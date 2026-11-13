@@ -1,4 +1,4 @@
-# Free GST Billing - Windows installer.
+# VentureBill - Windows installer.
 #
 # Invoked by the HTA launcher on first run. Idempotent - safe to
 # re-run any time. Installs Node.js if missing, runs npm install
@@ -7,7 +7,7 @@
 # extract folder again.
 
 $ErrorActionPreference = 'Continue'
-$Host.UI.RawUI.WindowTitle = 'Free GST Billing - Installer'
+$Host.UI.RawUI.WindowTitle = 'VentureBill - Installer'
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $SystemDir = $ScriptDir
@@ -15,7 +15,7 @@ $RootDir   = Split-Path -Parent $ScriptDir
 
 Write-Host ''
 Write-Host '  ============================================================'
-Write-Host '   Free GST Billing Software - Installer'
+Write-Host '   VentureBill - Installer'
 Write-Host '  ============================================================'
 Write-Host ''
 
@@ -31,7 +31,7 @@ function Find-OtherInstall {
   foreach ($dir in @([Environment]::GetFolderPath('Desktop'), [Environment]::GetFolderPath('Programs'))) {
     # One unreadable or empty shortcut must not stop the others being checked.
     try {
-      $lnk = Join-Path $dir 'Free GST Billing.lnk'
+      $lnk = Join-Path $dir 'VentureBill.lnk'
       if (-not (Test-Path -LiteralPath $lnk)) { continue }
       # v1.10.83 - the one-line install's shortcut runs "...\_system\start-windows.ps1"
       # -AppWindow; the launcher's runs "...\Free GST Billing - WINDOWS.hta". The
@@ -43,7 +43,7 @@ function Find-OtherInstall {
       $roots += $r
     } catch { }
   }
-  $roots += Join-Path $env:LOCALAPPDATA 'Programs\Free GST Billing'
+  $roots += Join-Path $env:LOCALAPPDATA 'Programs\VentureBill'
   foreach ($r in $roots) {
     if (-not $r -or $r.TrimEnd('\') -eq $here) { continue }
     if ((Test-Path -LiteralPath (Join-Path $r '_system\server.js')) -and (Test-Path -LiteralPath (Join-Path $r '_system\node_modules'))) { return $r }
@@ -53,12 +53,12 @@ function Find-OtherInstall {
 if (-not $env:FREEGSTBILL_DIR) {
   $other = Find-OtherInstall
   if ($other) {
-    Write-Host '  Free GST Billing is already installed on this computer, in:' -ForegroundColor Yellow
+    Write-Host '  VentureBill is already installed on this computer, in:' -ForegroundColor Yellow
     Write-Host "    $other"
     Write-Host ''
     Write-Host '  Installing again here would make a second copy with no invoices in it.'
     Write-Host '  To get the newest version, update the installed copy instead:'
-    Write-Host '  open it from your Free GST Billing shortcut, then'
+    Write-Host '  open it from your VentureBill shortcut, then'
     Write-Host '  More options -> Update to the latest version.'
     Write-Host ''
     Write-Host '  Nothing was changed. This folder is not needed; you can delete it.'
@@ -156,7 +156,7 @@ try {
     $lines = @(
       '[.ShellClassInfo]',
       'IconResource=_system\app-icon.ico,0',
-      'InfoTip=Free GST Billing Software - open the launcher inside'
+      'InfoTip=VentureBill - open the launcher inside'
     )
     Set-Content -Path $ini -Value $lines -Encoding ASCII -Force
     attrib +H +S "$ini" 2>$null
@@ -174,7 +174,7 @@ Write-Host '  ============================================================'
 Write-Host ''
 Write-Host '  Opening the app in your browser now...'
 Write-Host ''
-Write-Host '  Next time, click the Free GST Billing icon on your Desktop or in the Start menu.'
+Write-Host '  Next time, click the VentureBill icon on your Desktop or in the Start menu.'
 Write-Host ''
 
 # v1.10.69 - finish the job. Leaving a console window saying "now go and

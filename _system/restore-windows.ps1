@@ -5,7 +5,7 @@
 # on top. Never destructive without a pre-restore snapshot.
 
 $ErrorActionPreference = 'Stop'
-$Host.UI.RawUI.WindowTitle = 'Free GST Billing - Restore'
+$Host.UI.RawUI.WindowTitle = 'VentureBill - Restore'
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $SystemDir = $ScriptDir
@@ -21,9 +21,9 @@ $dataDir = Join-Path $HomeDir 'data'
 Add-Type -AssemblyName System.Windows.Forms
 
 $dlg = New-Object System.Windows.Forms.OpenFileDialog
-$dlg.Title = 'Select a Free GST Billing backup ZIP'
+$dlg.Title = 'Select a VentureBill backup ZIP'
 $dlg.Filter = 'ZIP files (*.zip)|*.zip'
-$dlg.InitialDirectory = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'FreeGSTBill Backups'
+$dlg.InitialDirectory = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'VentureBill Backups'
 if ($dlg.ShowDialog() -ne 'OK') {
   Write-Host '  Cancelled.'
   exit 0
@@ -32,7 +32,7 @@ $zipPath = $dlg.FileName
 
 # --- Safety snapshot of current data folder ---
 if (Test-Path $dataDir) {
-  $backupsHome = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'FreeGSTBill Backups'
+  $backupsHome = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'VentureBill Backups'
   if (-not (Test-Path $backupsHome)) { New-Item -ItemType Directory -Path $backupsHome | Out-Null }
   $stamp = Get-Date -Format 'yyyy-MM-dd_HH-mm-ss'
   $preRestore = Join-Path $backupsHome "pre-restore-$stamp.zip"

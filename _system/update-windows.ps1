@@ -63,7 +63,7 @@ if ($FromFolder) {
 # --- Step 2: Find latest release ---
 Write-Host '  Checking latest release from GitHub...'
 try {
-  $api = Invoke-RestMethod -Uri 'https://api.github.com/repos/IamRamgarhia/Free-GST-Billing-Software/releases/latest' -Headers @{ 'User-Agent' = 'FreeGSTBill-Updater' }
+  $api = Invoke-RestMethod -Uri 'https://api.github.com/repos/client1307/VentureBill/releases/latest' -Headers @{ 'User-Agent' = 'VentureBill-Updater' }
   $tag = $api.tag_name
   $zipAsset = $api.assets | Where-Object { $_.name -like '*.zip' } | Select-Object -First 1
   if (-not $zipAsset) {
@@ -80,7 +80,7 @@ try {
 }
 
 # --- Step 3: Download + extract to a staging folder ---
-$tmp = Join-Path $env:TEMP "fgstbill-update-$([Guid]::NewGuid().ToString('N').Substring(0,8))"
+$tmp = Join-Path $env:TEMP "venturebill-update-$([Guid]::NewGuid().ToString('N').Substring(0,8))"
 New-Item -ItemType Directory -Path $tmp | Out-Null
 $zipPath = Join-Path $tmp 'update.zip'
 Write-Host '  Downloading update...'
